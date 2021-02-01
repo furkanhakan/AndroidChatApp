@@ -16,10 +16,10 @@ export default {
     flexDirection: 'row', paddingTop: 20, paddingBottom: 10, width: '100%'
   },
   goBackBlock: {
-    width: 30, alignItems: 'center', justifyContent: 'center'
+    width: 50, alignItems: 'center', justifyContent: 'center'
   },
   imgUser: {
-    width: 50, height: 50, resizeMode: 'contain', borderRadius: 30, marginLeft: 10
+    width: 40, height: 40, resizeMode: 'contain', borderRadius: 30, marginLeft: 10
   },
   nameText: {
     marginBottom: 2, color: '#fff', fontSize: 16, fontWeight: 'bold'
@@ -86,8 +86,8 @@ export default {
     backgroundColor: theme.secondaryColor,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingBottom: 10,
-    paddingTop: 10,
+    paddingBottom: 5,
+    paddingTop: 5,
     borderRadius: 10,
   },
   agentMsgText: {

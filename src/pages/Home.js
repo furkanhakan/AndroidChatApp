@@ -39,7 +39,7 @@ function OtherNavigation() {
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="test" component={OtherNavigation} />
                 <Stack.Screen name="chat" component={Chat} />
             </Stack.Navigator>
