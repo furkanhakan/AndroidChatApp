@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View , TouchableWithoutFeedback} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AllUserList from './AllUserList'
@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth'
 import { createStackNavigator } from '@react-navigation/stack';
 import Chat from './Chat';
+import UserList from '../components/UserList/UserList';
 
 function cikis() {
     auth().signOut()
@@ -17,9 +18,9 @@ function HomeScreen() {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>{user.email}</Text>
-            <TouchableOpacity>
+            <TouchableWithoutFeedback onPress={cikis}>
                 <Text>Çıkış Yap</Text>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         </View>
     );
 }

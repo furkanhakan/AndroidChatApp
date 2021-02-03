@@ -6,6 +6,7 @@ import database from '@react-native-firebase/database'
 import { ListItem } from 'react-native-elements';
 import { theme } from './themeConstants';
 import { Icon } from 'react-native-elements'
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const Chat = ({ route, navigation }) => {
@@ -17,13 +18,12 @@ const Chat = ({ route, navigation }) => {
     const [isReady, setIsReady] = useState(false)
 
     const [messages, setMessages] = React.useState([])
-    const [messageHeight, setMessageHeight] = useState('83%')
 
     let flatList;
 
     React.useEffect(() => {
         const userRef = database().ref('/messages/' + tableId)
-        const OnLoadingListener = userRef.on('value', snapshot => {
+        const OnLoadingListener = userRef.orderByChild('date').on('value', snapshot => {
             setMessages([]);
             snapshot.forEach(children => {
                 if (children.val() != null)
@@ -31,13 +31,8 @@ const Chat = ({ route, navigation }) => {
             })
         });
 
-        Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
-        Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
-
         return () => {
             userRef.off('value', OnLoadingListener)
-            Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow);
-            Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide);
         }
     }, [])
 
@@ -51,7 +46,7 @@ const Chat = ({ route, navigation }) => {
                         from: user.uid,
                         to: id,
                         msg: message,
-                        date: new Date().getTime()
+                        date: -new Date().getTime()
                     })
                 setMessage('')
             }
@@ -59,21 +54,13 @@ const Chat = ({ route, navigation }) => {
         }
     }
 
-    // Klavye konumuna göre sohbet ekranı
-    const onKeyboardDidShow = (e) => {
-        setMessageHeight('73%')
-    }
-    const onKeyboardDidHide = (e) => {
-        setMessageHeight('83%')
-    }
-
     const userSelections = (item) => {
-        var date = new Date(item.date);
+        var date = new Date(-item.date);
         var hours = date.getHours();
         var minutes = date.getMinutes();
         if (item.from != user.uid) {
             return (
-                <View style={{ marginTop: 30 }} key={item}>
+                <View style={{ marginTop: 30 }} key={item.date}>
                     <View style={styles.friendBlock}>
                         <View style={styles.agentMsgBlock}>
                             <Text style={styles.agentMsgText}>{item.msg}</Text>
@@ -86,7 +73,7 @@ const Chat = ({ route, navigation }) => {
             );
         } else {
             return (
-                <View style={{ marginTop: 30 }} key={item}>
+                <View style={{ marginTop: 30 }} key={item.date}>
                     <View style={styles.userBlock}>
                         <View style={styles.userMsgBlock}>
                             <Text style={styles.userMsgText}>{item.msg}</Text>
@@ -122,16 +109,15 @@ const Chat = ({ route, navigation }) => {
                         </View>
                     </View>
                 </View>
-                <View style={{ marginBottom: 20, height: messageHeight }}>
+                <View style={{ height: '82%' }}>
                     {
                         <FlatList
+                            inverted
                             data={messages}
                             renderItem={({ item }) => userSelections(item)}
                             keyExtractor={item => item.id}
                             ref={ref => flatList = ref}
-                            onContentSizeChange={(contentWidth, contentHeight) => {
-                                flatList.scrollToEnd({ animated: true });
-                            }}
+
                         />
 
                     }

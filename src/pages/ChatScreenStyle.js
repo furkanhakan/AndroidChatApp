@@ -10,7 +10,7 @@ export default {
     justifyContent: 'center'
   },
   headerOuterBlock: {
-    alignItems: 'center', justifyContent: 'flex-end', backgroundColor: theme.primaryColor
+    alignItems: 'center', justifyContent: 'flex-end', backgroundColor: theme.primaryColor, height: '10%'
   },
   headerBlock: {
     flexDirection: 'row', paddingTop: 20, paddingBottom: 10, width: '100%'
@@ -19,7 +19,7 @@ export default {
     width: 50, alignItems: 'center', justifyContent: 'center'
   },
   imgUser: {
-    width: 40, height: 40, resizeMode: 'contain', borderRadius: 30, marginLeft: 10
+    width: 50, height: 50, resizeMode: 'cover', borderRadius: 50, marginLeft: 10,
   },
   nameText: {
     marginBottom: 2, color: '#fff', fontSize: 16, fontWeight: 'bold'
@@ -50,7 +50,7 @@ export default {
     borderColor: '#C8C8C8'
   },
   footerBlockWrapper: {
-    marginBottom: 0, width: '100%', alignItems: 'flex-start', position: 'absolute', bottom: 10, backgroundColor: theme.chatBackground
+    marginBottom: 0, width: '100%', alignItems: 'flex-start', backgroundColor: theme.chatBackground, height: '8%'
   },
   footerBlock: {
     width: '100%', flexDirection: 'row'
