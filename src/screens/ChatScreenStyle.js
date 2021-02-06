@@ -50,7 +50,7 @@ export default {
     borderColor: '#C8C8C8'
   },
   footerBlockWrapper: {
-    marginBottom: 0, width: '100%', alignItems: 'flex-start', backgroundColor: theme.chatBackground, height: '8%'
+    marginBottom: 0, width: '100%', alignItems: 'flex-start', backgroundColor: theme.chatBackground, height: '10%'
   },
   footerBlock: {
     width: '100%', flexDirection: 'row'

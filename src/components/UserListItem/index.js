@@ -1,16 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {
     View,
     Text,
     Image,
     TouchableWithoutFeedback,
-    StyleSheet
 } from "react-native";
 import styles from "./style";
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native';
 
-const UserList = (props) => {
+const UserListItem = (props) => {
     const navigation = useNavigation();
     const {id, email, avatar, userName} = props
 
@@ -49,4 +48,4 @@ const UserList = (props) => {
     )
 }
 
-export default UserList;
+export default UserListItem;

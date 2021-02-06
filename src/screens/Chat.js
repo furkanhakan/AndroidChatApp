@@ -1,12 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TextInput, Alert, Image, TouchableOpacity, FlatList, Dimensions, Keyboard, KeyboardEvent } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity, FlatList } from 'react-native';
 import styles from "./ChatScreenStyle";
 import { AuthContext } from "../context/FirebaseContext";
 import database from '@react-native-firebase/database'
-import { ListItem } from 'react-native-elements';
 import { theme } from './themeConstants';
 import { Icon } from 'react-native-elements'
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 const Chat = ({ route, navigation }) => {
@@ -90,26 +88,7 @@ const Chat = ({ route, navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flex: 1, backgroundColor: theme.chatBackground }}>
-                <View style={styles.headerOuterBlock}>
-                    <View style={styles.headerBlock}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackBlock}>
-                            <View style={{ paddingLeft: 10 }}>
-                                <Icon name='arrow-back' size={24} color="#fff" />
-                            </View>
-                        </TouchableOpacity>
-                        <Image source={{ uri: avatar }} style={styles.imgUser} />
-                        <View style={{ paddingLeft: 15 }}>
-                            <Text style={styles.nameText}>{userName}</Text>
-                            <Text style={styles.usernameText}>{email}</Text>
-                        </View>
-                        <View style={styles.menuIconBlock}>
-                            <TouchableOpacity>
-                                <Text style={styles.menuIcon}>...</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-                <View style={{ height: '82%' }}>
+                <View style={{ height: '90%' }}>
                     {
                         <FlatList
                             inverted
@@ -119,7 +98,6 @@ const Chat = ({ route, navigation }) => {
                             ref={ref => flatList = ref}
 
                         />
-
                     }
                 </View>
                 <View style={styles.footerBlockWrapper}>

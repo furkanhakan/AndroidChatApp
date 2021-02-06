@@ -7,8 +7,8 @@
  */
 
 import React, { useContext } from "react";
-import Home from './pages/Home';
-import UserAuth from './pages/UserAuth';
+import Navigation from './navigation/index'
+import UserAuth from './screens/UserAuth';
 import { AuthProvider } from "./context/FirebaseContext";
 import { AuthContext } from "./context/FirebaseContext";
 
@@ -18,7 +18,7 @@ function App() {
     <>
       {
         user ?
-          <Home />
+          <Navigation />
           :
           <UserAuth />
       }

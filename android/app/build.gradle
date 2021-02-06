@@ -1,10 +1,10 @@
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: "com.android.application"
 apply plugin: "com.google.gms.google-services"
 
 project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Name of the font files you want to copy
 ]
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 
 import com.android.build.OutputFile
@@ -141,6 +141,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -193,8 +194,12 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation project(path: ":@react-native-firebase_app")
+    implementation project(':react-native-contacts')
+    implementation project(':react-native-vector-icons')  
+    implementation project(':@react-native-async-storage')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

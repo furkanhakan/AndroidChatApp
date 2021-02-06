@@ -1,30 +1,25 @@
 import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth'
-import styles from "./style";
+import styles from "./UserAuthStyle";
 import { Keyboard, Text, View, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView } from 'react-native';
 import { Button } from 'react-native-elements';
-import database from '@react-native-firebase/database'
 
 
 
-const Signup = ({ navigation }) => {
+const Login = ({ navigation }) => {
     const [error, setError] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
-    const [passwordAgain, setPasswordAgain] = useState()
 
-    function signUp() {
-        auth().createUserWithEmailAndPassword(email, password).then((user) => {
-            database()
-                .ref('/users/' + user.user.uid)
-                .set({
-                    id: user.user.uid,
-                    email: user.user.email,
-                    avatar: 'https://firebasestorage.googleapis.com/v0/b/wemeet-a0aa8.appspot.com/o/user.png?alt=media&token=67a9d397-4574-466f-8c3c-af0337074226'
-                })
+    function login() {
+        auth().signInWithEmailAndPassword(email, password).then(() => {
         }).catch((err) => {
-            console.log(err.code)
-
+            switch (err.code) {
+                case 'auth/wrong-password': setError('Email adresiniz veya şifreniz yanlış.'); break;
+                case 'auth/invalid-email': setError('Lütfen geçerli bir email adresi giriniz.'); break;
+                case 'auth/user-not-found': setError('Böyle bir hesap kayıtlı değil.'); break;
+                default: break;
+            }
         })
     }
     return (
@@ -35,17 +30,16 @@ const Signup = ({ navigation }) => {
                         <Text style={styles.logoText}>WeMeet</Text>
                         <TextInput onChangeText={(text) => setEmail(text)} placeholder="Email" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
                         <TextInput onChangeText={(text) => setPassword(text)} placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
-                        <TextInput onChangeText={(text) => setPasswordAgain(text)} placeholder="Password again" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
                         <Button
                             buttonStyle={styles.loginButton}
-                            onPress={signUp}
-                            title="Sign up"
+                            onPress={login}
+                            title="Login"
                         />
                         <Button
                             buttonStyle={styles.changeScreenButton}
-                            onPress={() => navigation.navigate('Login')}
-                            title="Hesabın zaten var mı? Giriş Yap."
-                            titleStyle={{ color: '#3897f1' }}
+                            onPress={() => navigation.navigate('Signup')}
+                            title="Hesabın yok mu? Kaydol."
+                            titleStyle={{color:'#3897f1'}}
                         />
                     </View>
                 </View>
@@ -54,4 +48,4 @@ const Signup = ({ navigation }) => {
     )
 }
 
-export default Signup;
+export default Login;
