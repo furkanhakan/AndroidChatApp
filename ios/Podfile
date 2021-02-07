@@ -10,6 +10,8 @@ target 'WeMeet' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'WeMeetTests' do
     inherit! :complete
     # Pods for testing
