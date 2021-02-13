@@ -1,12 +1,11 @@
 import React from 'react'
 import { View, useColorScheme, PermissionsAndroid, Alert } from 'react-native';
-import database from '@react-native-firebase/database'
+import firestore from '@react-native-firebase/firestore'
 import { AuthContext } from '../context/FirebaseContext';
 import UserList from '../components/UserListItem';
 import { FlatList } from 'react-native-gesture-handler';
 import Colors from '../constant/Colors'
 import Icon from "react-native-vector-icons/FontAwesome";
-import { ScrollViewComponent } from 'react-native';
 import { SafeAreaView } from 'react-native';
 
 const permission = async () => {
@@ -30,24 +29,39 @@ const permission = async () => {
 function ChatUserList({ navigation }) {
     const color = Colors[useColorScheme()]
     const [users, setUsers] = React.useState([])
+    const [test, settest] = React.useState([])
     const { user } = React.useContext(AuthContext)
 
     React.useEffect(() => {
-        const userRef = database().ref('/users')
-        const OnLoadingListener = userRef.on('value', snapshot => {
-            setUsers([]);
-            snapshot.forEach(children => {
-                if (user.uid != children.val().id)
-                    setUsers(users => [...users, children.val()])
-            })
-        });
+        const subscriber = firestore()
+            .collection(`users/${user.uid}/contacts`)
+            .onSnapshot(documentSnapshot => {
+                let userList = [];
+                documentSnapshot.docs.forEach(async (value) => {
+                    let userId = value._ref._documentPath._parts[3];
+                    let user = await firestore().collection(`users`)
+                        .doc(userId)
+                        .get()
 
-        return () => {
-            userRef.off('value', OnLoadingListener)
-        }
+                    userList = [
+                        ...userList,
+                        {
+                            id: userId,
+                            email: user._data.email,
+                            avatar: user._data.avatar,
+                            userName: user._data.name,
+                            lastMessage: value._data.message,
+                            time: value._data.time,
+                            me: value._data.me,
+                            seen: value._data.seen
+                        }
+                    ]
+                    setUsers(userList)
+                })
+            });
+
+        return () => subscriber();
     }, [])
-
-
 
 
     const contactRoute = async () => {
@@ -69,13 +83,7 @@ function ChatUserList({ navigation }) {
                     <FlatList
                         style={{ width: '100%' }}
                         data={users}
-                        renderItem={({ item }) => <UserList
-                            id={item.id}
-                            email={item.email}
-                            avatar={item.avatar}
-                            userName={item.userName}
-                            lastMessage='Son mesaj burada gösterilir!'
-                        />}
+                        renderItem={({ item }) => <UserList user={item} />}
                         keyExtractor={item => item.id}
                     />
                 }

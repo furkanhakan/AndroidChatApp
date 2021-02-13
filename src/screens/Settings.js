@@ -7,7 +7,7 @@ import Colors from '../constant/Colors'
 import { launchImageLibrary } from 'react-native-image-picker'
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth'
-import database from '@react-native-firebase/database'
+import firestore from '@react-native-firebase/firestore'
 
 
 export default function Settings({navigation}) {
@@ -31,7 +31,7 @@ export default function Settings({navigation}) {
             displayName: name,
             photoURL: url
         })
-        await database().ref('users/' + user.uid).update({
+        await firestore().collection('users').doc(user.uid).update({
             avatar: url
         })
         navigation.navigate('chatUserList')

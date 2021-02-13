@@ -11,3 +11,15 @@ export const getAllUsers = () => {
         });
 
 }
+
+export const findUsersMyChat = async () => {
+    const data = await database()
+        .ref('/users')
+        .on('value', snapshot => {
+            return snapshot.val()
+        }).catch((err) => {
+            console.log(err)
+        });
+
+    return data;
+}
