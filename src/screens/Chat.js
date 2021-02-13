@@ -45,17 +45,14 @@ const Chat = ({ route, navigation }) => {
             });
 
         firestore()
-            .collection(collectionName)
+            .collection(`users/${id}/contacts/${user.uid}/messages`)
             .where('seen', '==', false)
-            .get().then((response) => {
-                let batch = firestore().batch()
-                response.docs.forEach((doc) => {
-                    const docRef = firestore().collection(collectionName).doc(doc.id)
-                    batch.update(docRef, {
+            .get().then(async (response) => {
+                response._docs.forEach(async (doc) => {
+                    doc._ref.update({
                         seen: true
                     })
                 })
-                batch.commit()
             })
 
         // Stop listening for updates when no longer required
