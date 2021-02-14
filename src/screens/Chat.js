@@ -26,7 +26,7 @@ const Chat = ({ route, navigation }) => {
     const [message, setMessage] = useState()
     const [messages, setMessages] = React.useState([])
 
-    const sendMessageHandle = () => {
+    const sendMessageHandle = async () => {
         if (message) {
             if (message.trim()) {
                 sendMessage(user.uid, id, message)
@@ -36,27 +36,40 @@ const Chat = ({ route, navigation }) => {
     }
 
     React.useEffect(() => {
-        const collectionName = `users/${user.uid}/contacts/${id}/messages`;
         const subscriber = firestore()
-            .collection(collectionName)
+            .collection(`users/${user.uid}/contacts/${id}/messages`)
             .orderBy('time', 'desc')
             .onSnapshot(documentSnapshot => {
                 setMessages(documentSnapshot.docs)
             });
 
-        firestore()
+        const seen = firestore()
             .collection(`users/${id}/contacts/${user.uid}/messages`)
             .where('seen', '==', false)
-            .get().then(async (response) => {
-                response._docs.forEach(async (doc) => {
-                    doc._ref.update({
+            .onSnapshot(documentSnapshot => {
+                documentSnapshot.docs.forEach((doc) => {
+                    doc.ref.update({
                         seen: true
                     })
                 })
             })
 
+        const seenProfile = () => firestore()
+            .collection(`users/${id}/contacts`)
+            .doc(user.uid)
+            .get()
+            .then(documentSnapshot => {
+                documentSnapshot.ref.update({
+                    seen: true
+                })
+            })
+        seenProfile()
+
         // Stop listening for updates when no longer required
-        return () => subscriber();
+        return () => {
+            subscriber()
+            seen()
+        };
     }, []);
 
     return (

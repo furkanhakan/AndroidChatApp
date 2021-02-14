@@ -43,9 +43,13 @@ const UserListItem = (props) => {
                 <Text style={styles.time}>
                     {user.lastMessage && date.getHours()}:{date.getMinutes()}
                 </Text>
-                <Text style={{ position: 'absolute', bottom: 20, right: 10 }}>
-                    <MaterialCommunityIcons name={check} size={18} color={user.seen ? '#0077b6' : 'grey'} />
-                </Text>
+                {
+                    user.me ?
+                        <Text style={{ position: 'absolute', bottom: 20, right: 10 }}>
+                            <MaterialCommunityIcons name={check} size={18} color={user.seen ? '#0077b6' : 'grey'} />
+                        </Text>
+                        : null
+                }
             </View>
         </TouchableWithoutFeedback>
     )

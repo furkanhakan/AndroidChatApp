@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Settings from '../screens/Settings';
 import { AuthContext } from '../context/FirebaseContext';
 import { Icon, Text } from 'react-native-elements'
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
@@ -55,12 +56,18 @@ export default function App() {
                             <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { navigation.goBack() }}>
                                 <Icon name='arrow-back' size={26} color="#000" style={{ paddingLeft: 15 }} />
                             </TouchableOpacity>
-                            <View style={{ justifyContent: 'center' }}>
-                                <Image source={{ uri: route.params.avatar }} style={{ width: 35, height: 35, borderRadius: 50, marginLeft: 20, }} />
-                            </View>
-                            <View style={{ paddingLeft: 15, justifyContent: 'center' }}>
-                                <Text>{route.params.userName}</Text>
-                            </View>
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate('profile', {
+                                    id: route.params.id
+                                })
+                            }} style={{ flexDirection: 'row', width: '100%', height: '100%', zIndex: 1 }}>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Image source={{ uri: route.params.avatar }} style={{ width: 35, height: 35, borderRadius: 50, marginLeft: 20, }} />
+                                </View>
+                                <View style={{ paddingLeft: 15, justifyContent: 'center' }}>
+                                    <Text>{route.params.userName}</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     ),
                     headerRight: () => (
@@ -77,6 +84,9 @@ export default function App() {
                 }} />
                 <Stack.Screen name="settings" component={Settings} options={{
                     title: 'Ayarlar'
+                }} />
+                <Stack.Screen name="profile" component={Profile} options={{
+                    title: ''
                 }} />
             </Stack.Navigator>
         </NavigationContainer>

@@ -29,7 +29,6 @@ const permission = async () => {
 function ChatUserList({ navigation }) {
     const color = Colors[useColorScheme()]
     const [users, setUsers] = React.useState([])
-    const [test, settest] = React.useState([])
     const { user } = React.useContext(AuthContext)
 
     React.useEffect(() => {
@@ -38,15 +37,14 @@ function ChatUserList({ navigation }) {
             .onSnapshot(documentSnapshot => {
                 let userList = [];
                 documentSnapshot.docs.forEach(async (value) => {
-                    let userId = value._ref._documentPath._parts[3];
                     let user = await firestore().collection(`users`)
-                        .doc(userId)
+                        .doc(value.id)
                         .get()
 
                     userList = [
                         ...userList,
                         {
-                            id: userId,
+                            id: value.id,
                             email: user._data.email,
                             avatar: user._data.avatar,
                             userName: user._data.name,

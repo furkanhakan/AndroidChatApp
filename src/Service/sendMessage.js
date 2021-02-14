@@ -2,7 +2,6 @@ import firestore from '@react-native-firebase/firestore'
 
 const sendMessage = (authId, userId, message) => {
     const time = new Date()
-    console.log(authId, userId, message)
     // From
     firestore()
         .collection(`users/${authId}/contacts/${userId}/messages`)
