@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, useColorScheme, Image, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { View, useColorScheme, Image, TouchableOpacity, TouchableNativeFeedback, AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Chat from '../screens/Chat';
@@ -12,11 +12,32 @@ import Settings from '../screens/Settings';
 import { AuthContext } from '../context/FirebaseContext';
 import { Icon, Text } from 'react-native-elements'
 import Profile from '../screens/Profile';
+import userChangeStatus from '../service/userChangeStatus'
 
 const Stack = createStackNavigator();
 
 export default function App() {
     const { user } = React.useContext(AuthContext)
+    const appState = React.useRef(AppState.currentState);
+
+    React.useEffect(() => {
+        AppState.addEventListener("change", _handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener("change", _handleAppStateChange);
+        };
+
+    }, [])
+
+    const _handleAppStateChange = async (nextAppState) => {
+        appState.current = nextAppState;
+        let status = false;
+        if (appState.current == 'active') {
+          status = true;
+        }
+    
+        userChangeStatus(user.uid, status, new Date())
+      };
 
     return (
         <NavigationContainer>
@@ -64,7 +85,7 @@ export default function App() {
                                 <View style={{ justifyContent: 'center' }}>
                                     <Image source={{ uri: route.params.avatar }} style={{ width: 35, height: 35, borderRadius: 50, marginLeft: 20, }} />
                                 </View>
-                                <View style={{ paddingLeft: 15, justifyContent: 'center' }}>
+                                <View style={{ paddingLeft: 15, justifyContent: 'center', flexDirection: 'column' }}>
                                     <Text>{route.params.userName}</Text>
                                 </View>
                             </TouchableOpacity>

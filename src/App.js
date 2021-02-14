@@ -6,18 +6,15 @@
  * @flow strict-local
  */
 
-import React, { useContext, useEffect, useRef } from "react";
-import { AppRegistry, AppState } from 'react-native'
+import React, { useContext, useEffect } from "react";
 import Navigation from './navigation/index'
 import UserAuth from './screens/UserAuth';
 import { AuthProvider } from "./context/FirebaseContext";
 import { AuthContext } from "./context/FirebaseContext";
 import messaging from '@react-native-firebase/messaging';
-import userChangeStatus from './service/userChangeStatus'
 
 function App() {
   const { user } = useContext(AuthContext);
-  const appState = useRef(AppState.currentState);
   const register = async () => {
     await messaging().registerDeviceForRemoteMessages();
     await messaging().requestPermission();
@@ -49,25 +46,7 @@ function App() {
   useEffect(() => {
     register()
     messageListener()
-
-    AppState.addEventListener("change", _handleAppStateChange);
-
-    return () => {
-      AppState.removeEventListener("change", _handleAppStateChange);
-    };
-
   }, [])
-
-  const _handleAppStateChange = async (nextAppState) => {
-    appState.current = nextAppState;
-    let status = false;
-    if (appState.current == 'active') {
-      status = true;
-    }
-
-    //userChangeStatus('rNpofPRq2JOB20sXg5W5DhjOhGH2', status, new Date())
-    //console.log(user)
-  };
 
   return (
     <>

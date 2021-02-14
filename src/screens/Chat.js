@@ -5,7 +5,8 @@ import {
     KeyboardAvoidingView,
     TextInput,
     TouchableOpacity,
-    FlatList, useColorScheme
+    FlatList, useColorScheme,
+    Image
 } from 'react-native';
 import styles from "./ChatScreenStyle";
 import { AuthContext } from "../context/FirebaseContext";
@@ -19,6 +20,7 @@ import ChatMessage from "../components/ChatMessage";
 import Colors from '../constant/Colors';
 import firestore from '@react-native-firebase/firestore'
 import sendMessage from '../service/sendMessage'
+import { Icon, Text } from 'react-native-elements'
 
 const Chat = ({ route, navigation }) => {
     const { id, email, avatar, userName } = route.params
@@ -36,6 +38,56 @@ const Chat = ({ route, navigation }) => {
     }
 
     React.useEffect(() => {
+
+        const getUser = firestore()
+            .collection('users')
+            .doc(id)
+            .onSnapshot((collection) => {
+                let lastSeen;
+                if (!collection.data().status) {
+                    let time = new Date(collection.data().lastSeen.seconds * 1000)
+                    let now = new Date()
+                    let day = null
+                    if (now.getDate() === time.getDate()) {
+                        day = 'bugün'
+                    } else if (now.getDate() - 1 === time.getDate()) {
+                        day = 'dün'
+                    }
+                    if (day) {
+                        lastSeen = `Son görülme ${day} ${time.getHours()}:${time.getMinutes()}`;
+                    } else {
+                        lastSeen = `Son görülme ${time.getDay()}.${time.getMonth()}.${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`;
+                    }
+                } else {
+                    lastSeen = 'Çevrimiçi'
+                }
+
+                navigation.setOptions({
+                    headerLeft: () => (
+                        <View style={{
+                            flexDirection: 'row',
+                        }}>
+                            <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { navigation.goBack() }}>
+                                <Icon name='arrow-back' size={26} color="#000" style={{ paddingLeft: 15 }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate('profile', {
+                                    id: id
+                                })
+                            }} style={{ flexDirection: 'row', width: '100%', height: '100%', zIndex: 1 }}>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Image source={{ uri: avatar }} style={{ width: 35, height: 35, borderRadius: 50, marginLeft: 20, }} />
+                                </View>
+                                <View style={{ paddingLeft: 15, justifyContent: 'center', flexDirection: 'column' }}>
+                                    <Text>{userName}</Text>
+                                    <Text style={{ fontSize: 10 }}>{lastSeen}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                })
+            })
+
         const subscriber = firestore()
             .collection(`users/${user.uid}/contacts/${id}/messages`)
             .orderBy('time', 'desc')
@@ -69,6 +121,7 @@ const Chat = ({ route, navigation }) => {
         return () => {
             subscriber()
             seen()
+            getUser()
         };
     }, []);
 
