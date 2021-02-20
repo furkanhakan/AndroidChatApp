@@ -21,6 +21,7 @@ import Colors from '../constant/Colors';
 import firestore from '@react-native-firebase/firestore'
 import sendMessage from '../service/sendMessage'
 import { Icon, Text } from 'react-native-elements'
+import lastSeen from '../service/lastSeen'
 
 const Chat = ({ route, navigation }) => {
     const { id, email, avatar, userName } = route.params
@@ -43,24 +44,7 @@ const Chat = ({ route, navigation }) => {
             .collection('users')
             .doc(id)
             .onSnapshot((collection) => {
-                let lastSeen;
-                if (!collection.data().status) {
-                    let time = new Date(collection.data().lastSeen.seconds * 1000)
-                    let now = new Date()
-                    let day = null
-                    if (now.getDate() === time.getDate()) {
-                        day = 'bugün'
-                    } else if (now.getDate() - 1 === time.getDate()) {
-                        day = 'dün'
-                    }
-                    if (day) {
-                        lastSeen = `Son görülme ${day} ${time.getHours()}:${time.getMinutes()}`;
-                    } else {
-                        lastSeen = `Son görülme ${time.getDay()}.${time.getMonth()}.${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`;
-                    }
-                } else {
-                    lastSeen = 'Çevrimiçi'
-                }
+                let message = lastSeen(collection.data().status, collection.data().lastSeen.seconds);
 
                 navigation.setOptions({
                     headerLeft: () => (
@@ -80,7 +64,7 @@ const Chat = ({ route, navigation }) => {
                                 </View>
                                 <View style={{ paddingLeft: 15, justifyContent: 'center', flexDirection: 'column' }}>
                                     <Text>{userName}</Text>
-                                    <Text style={{ fontSize: 10 }}>{lastSeen}</Text>
+                                    <Text style={{ fontSize: 10 }}>{message}</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

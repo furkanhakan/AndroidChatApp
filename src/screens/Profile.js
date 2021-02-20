@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore'
 import { Image } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from 'react-native-elements'
+import lastSeen from '../service/lastSeen'
 
 const Profile = ({ route }) => {
     const userId = route.params.id
@@ -16,24 +17,7 @@ const Profile = ({ route }) => {
             .doc(userId)
             .onSnapshot((collection) => {
                 setUser(collection.data())
-                let lastSeen;
-                if(!collection.data().status) {
-                    let time = new Date(collection.data().lastSeen.seconds * 1000)
-                    let now = new Date()
-                    let day = null
-                    if(now.getDate() === time.getDate()) {
-                        day = 'bugün'
-                    } else if(now.getDate() - 1 === time.getDate()) {
-                        day = 'dün'
-                    }
-                    if(day) {
-                        lastSeen = `Son görülme ${day} ${time.getHours()}:${time.getMinutes()}`;
-                    } else {
-                        lastSeen = `Son görülme ${time.getDay()}.${time.getMonth()}.${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`;
-                    }
-                } else {
-                    lastSeen = 'Çevrimiçi'
-                }
+                let message = lastSeen(collection.data().status, collection.data().lastSeen.seconds);
 
                 navigation.setOptions({
                     headerLeft: () => (
@@ -47,7 +31,7 @@ const Profile = ({ route }) => {
                                 </View>
                                 <View style={{ justifyContent: 'center' }}>
                                     <Text style={{ fontSize: 11, color: 'grey' }}>
-                                        {lastSeen}
+                                        {message}
                                     </Text>
                                 </View>
                             </View>
@@ -61,7 +45,7 @@ const Profile = ({ route }) => {
 
     if (user) {
         return (
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1, marginTop: 20 }}>
                 <View style={{ width: '100%', height: Dimensions.get('window').height * 0.4 }}>
                     <Image resizeMode='contain' source={{ uri: user.avatar }} style={{ width: '100%', height: '100%' }} />
                 </View>

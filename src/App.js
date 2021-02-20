@@ -12,6 +12,7 @@ import UserAuth from './screens/UserAuth';
 import { AuthProvider } from "./context/FirebaseContext";
 import { AuthContext } from "./context/FirebaseContext";
 import messaging from '@react-native-firebase/messaging';
+import VerifyPhoneNumber from './screens/VerifyPhoneNumber'
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -48,16 +49,20 @@ function App() {
     messageListener()
   }, [])
 
-  return (
-    <>
-      {
-        user ?
-          <Navigation />
-          :
-          <UserAuth />
-      }
-    </>
-  );
+  if (user) {
+    if (user.phoneNumber) {
+      return (
+        <Navigation />
+      )
+    }
+    return (
+      <VerifyPhoneNumber />
+    )
+  } else {
+    return (
+      <UserAuth />
+    )
+  }
 }
 
 

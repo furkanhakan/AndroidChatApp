@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth'
 import styles from "./UserAuthStyle";
-import { Keyboard, Text, View, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView } from 'react-native';
+import { Keyboard, Text, View, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { Button } from 'react-native-elements';
-
-
 
 const Login = ({ navigation }) => {
     const [error, setError] = useState()
@@ -12,18 +10,22 @@ const Login = ({ navigation }) => {
     const [password, setPassword] = useState()
 
     function login() {
-        auth().signInWithEmailAndPassword(email, password).then(() => {
-        }).catch((err) => {
-            switch (err.code) {
-                case 'auth/wrong-password': setError('Email adresiniz veya şifreniz yanlış.'); break;
-                case 'auth/invalid-email': setError('Lütfen geçerli bir email adresi giriniz.'); break;
-                case 'auth/user-not-found': setError('Böyle bir hesap kayıtlı değil.'); break;
-                default: break;
-            }
-        })
+        if(email && password) {
+            auth().signInWithEmailAndPassword(email, password).then(() => {
+            }).catch((err) => {
+                switch (err.code) {
+                    case 'auth/wrong-password': setError('Email adresiniz veya şifreniz yanlış.'); break;
+                    case 'auth/invalid-email': setError('Lütfen geçerli bir email adresi giriniz.'); break;
+                    case 'auth/user-not-found': setError('Böyle bir hesap kayıtlı değil.'); break;
+                    default: setError('Bir hata oluştu. Lütfen daha sonra deneyin.'); break;
+                }
+            })
+        } else {
+            setError('Lütfen tüm alanları doldurunuz.')
+        }
     }
     return (
-        <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+        <KeyboardAvoidingView style={styles.containerView} behavior={"height"}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.loginScreenContainer}>
                     <View style={styles.loginFormView}>
@@ -35,6 +37,14 @@ const Login = ({ navigation }) => {
                             onPress={login}
                             title="Login"
                         />
+                        {
+                            error ?
+                            <Text style={{color: 'red', alignSelf: 'center'}}>
+                                {error}
+                            </Text>
+                            :
+                            null
+                        }
                         <Button
                             buttonStyle={styles.changeScreenButton}
                             onPress={() => navigation.navigate('Signup')}
