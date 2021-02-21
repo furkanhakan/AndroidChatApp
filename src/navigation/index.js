@@ -33,11 +33,19 @@ export default function App() {
         appState.current = nextAppState;
         let status = false;
         if (appState.current == 'active') {
-          status = true;
+            status = true;
         }
-    
+
         userChangeStatus(user.uid, status, new Date())
-      };
+    };
+
+    const test = () => {
+        return (
+            <View style={{ height: 100, width: 100, backgroundColor: 'red' }}>
+
+            </View>
+        )
+    }
 
     return (
         <NavigationContainer>
@@ -101,7 +109,7 @@ export default function App() {
                     )
                 })} />
                 <Stack.Screen name="contacts" component={Contacts} options={{
-                    title: 'Kişiler'
+                    headerShown: false
                 }} />
                 <Stack.Screen name="settings" component={Settings} options={{
                     title: 'Ayarlar'

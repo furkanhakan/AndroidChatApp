@@ -21,6 +21,7 @@ const Signup = ({ navigation }) => {
                         .collection('users')
                         .doc(user.user.uid)
                         .set({
+                            id: user.user.uid,
                             avatar: defaultAvatar,
                             email: email,
                             name: name,

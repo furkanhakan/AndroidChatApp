@@ -10,7 +10,7 @@ import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
 
-export default function Settings({navigation}) {
+export default function Settings({ navigation }) {
     const { user } = React.useContext(AuthContext);
     const [image, setImage] = React.useState(user.photoURL);
     const [nameInputBorderWidth, setNameInputBorderWidth] = React.useState(0)
@@ -72,7 +72,7 @@ export default function Settings({navigation}) {
                     borderBottomColor: Colors[useColorScheme()].buttonColor,
                     borderBottomWidth: nameInputBorderWidth
                 }}
-                style={{ fontSize: 16, borderBottomColor: 'red' }}
+                style={{ fontSize: 16 }}
                 onFocus={() => { setNameInputBorderWidth(1) }}
                 onBlur={() => { setNameInputBorderWidth(0) }}
                 value={name}
@@ -83,6 +83,13 @@ export default function Settings({navigation}) {
                     title='Kaydet'
                     onPress={saveProfile}
                     disabled={name ? false : true}
+                />
+            </View>
+            <View style={{ marginTop: 40, width: '100%' }}>
+                <Button
+                    buttonStyle={{backgroundColor: 'red'}}
+                    title='Çıkış Yap'
+                    onPress={() => auth().signOut()}
                 />
             </View>
         </View>

@@ -1,62 +1,59 @@
 import React from 'react'
-import { View, Text, PermissionsAndroid, FlatList } from 'react-native';
-import Contacts from 'react-native-contacts'
+import { View, FlatList } from 'react-native';
 import ContactListItem from '../components/ContactListItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const storeData = async (value) => {
-    try {
-        const jsonValue = JSON.stringify(value)
-        AsyncStorage.setItem('contact', jsonValue)
-    } catch (e) {
-        console.error(e)
-    }
-}
-
-const getData = async () => {
-    try {
-        const jsonValue = await AsyncStorage.getItem('contact')
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-        console.error(e)
-    }
-}
+import firestore from '@react-native-firebase/firestore'
+import { AuthContext } from "../context/FirebaseContext";
+import HeaderClassicSearchBar from "../components/HeaderClassicSearchBar/HeaderClassicSearchBar";
 
 function ContactList() {
+    const { user } = React.useContext(AuthContext);
+    const usersRef = firestore().collection('users');
+    const [searchText, setSearchText] = React.useState()
     const [users, setUsers] = React.useState(() => {
-        getData().then(data => {
-            if(data != null) {
-                console.log('hayır bura')
-                setUsers(data)
-            } else {
-                console.log('burası Çalıştı')
-                Contacts.getAllWithoutPhotos().then(contacts => {
-                    contacts.map((item, index) => {
-                        if (item.phoneNumbers.length)
-                            setUsers((users = []) => [...users, item])
+        usersRef
+            .where('id', '!=', user.uid)
+            .limit(20)
+            .get()
+            .then((value) => {
+                value.forEach((queryDocumentSnapshot) => {
+                    setUsers((users = []) => [...users, queryDocumentSnapshot.data()])
+                })
+            })
+    })
+
+    const searhUser = () => {
+        if (searchText) {
+            setUsers([])
+            usersRef
+                .where('name', '>=', searchText)
+                .limit(20)
+                .get()
+                .then((value) => {
+                    value.forEach((queryDocumentSnapshot) => {
+                        if (queryDocumentSnapshot.data().id != user.uid)
+                            setUsers((users = []) => [...users, queryDocumentSnapshot.data()])
                     })
                 })
-            }
-        })
-    })
-    storeData(users)
-    
+        }
+    }
+
+
     return (
         <View style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
         }}>
+            <HeaderClassicSearchBar onChangeText={text => setSearchText(text)} onPress={searhUser} />
             <FlatList
                 style={{ width: '100%' }}
                 data={users}
                 renderItem={({ item }) => <ContactListItem
-                    id={item.rawContactId}
-                    name={item.displayName}
-                    phoneNumber={item.phoneNumbers[0].number}
+                    user={item}
                 />}
-                keyExtractor={(item) => item.rawContactId}
+                keyExtractor={(item) => item.id}
             />
+
         </View>
 
     )
