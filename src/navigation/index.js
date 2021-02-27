@@ -64,14 +64,6 @@ export default function App() {
         userChangeStatus(user.uid, status, new Date(), token)
     };
 
-    const test = () => {
-        return (
-            <View style={{ height: 100, width: 100, backgroundColor: 'red' }}>
-
-            </View>
-        )
-    }
-
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{
@@ -122,14 +114,6 @@ export default function App() {
                                     <Text>{route.params.userName}</Text>
                                 </View>
                             </TouchableOpacity>
-                        </View>
-                    ),
-                    headerRight: () => (
-                        <View style={{
-                            width: 25,
-                            marginRight: 10
-                        }}>
-                            <MaterialCommunityIcons name='dots-vertical' size={22} onPress={() => { navigation.navigate('settings') }} ></MaterialCommunityIcons>
                         </View>
                     )
                 })} />

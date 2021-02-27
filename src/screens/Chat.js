@@ -127,7 +127,7 @@ const Chat = ({ route, navigation }) => {
         <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
             <FlatList
                 data={messages}
-                renderItem={({ item }) => <ChatMessage message={item} />}
+                renderItem={({ item }) => <ChatMessage message={item} userId={id} />}
                 inverted
                 keyExtractor={(item) => item.id}
             />

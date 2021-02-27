@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import styles from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import firestore from '@react-native-firebase/firestore'
+import { AuthContext } from '../../context/FirebaseContext'
 
 const ChatMessage = (props) => {
-    const { message } = props;
+    const { user } = useContext(AuthContext)
+    const { message, userId } = props;
     let date = new Date(message._data.time.seconds * 1000)
     const check = message._data.seen != true ? 'check' : 'check-all'
     const isMyMessage = () => {
         return message._data.me === false;
     }
 
+    const deleteAlert = (id, msg) => {
+        Alert.alert(
+            'Mesaj sil',
+            `${msg} mesajını silmek istediğine emin misin?`,
+            [
+                {
+                    text: "İptal",
+                    style: "cancel"
+                },
+                {
+                    text: "Sil",
+                    onPress: () => {
+                        firestore()
+                            .collection(`users/${user.uid}/contacts/${userId}/messages`)
+                            .doc(id)
+                            .delete()
+                    }
+                }
+            ]
+        )
+
+    }
+
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onLongPress={() => { deleteAlert(message.id, message._data.message) }}>
             <View style={[
                 styles.messageBox, {
                     backgroundColor: isMyMessage() ? 'white' : '#DCF8C5',
@@ -32,7 +57,7 @@ const ChatMessage = (props) => {
                     }
                 </Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

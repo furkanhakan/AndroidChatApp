@@ -19,7 +19,8 @@ export default function Settings({ navigation }) {
     const uploadImage = async () => {
         const options = {};
         await launchImageLibrary(options, response => {
-            setImage(response.uri);
+            if (response.uri)
+                setImage(response.uri);
         })
     }
 
@@ -87,7 +88,7 @@ export default function Settings({ navigation }) {
             </View>
             <View style={{ marginTop: 40, width: '100%' }}>
                 <Button
-                    buttonStyle={{backgroundColor: 'red'}}
+                    buttonStyle={{ backgroundColor: 'red' }}
                     title='Çıkış Yap'
                     onPress={() => auth().signOut()}
                 />
