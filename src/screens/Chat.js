@@ -24,16 +24,30 @@ import { Icon, Text } from 'react-native-elements'
 import lastSeen from '../service/lastSeen'
 
 const Chat = ({ route, navigation }) => {
-    const { id, email, avatar, userName } = route.params
+    const { id, email, avatar, userName, token } = route.params
     const { user } = useContext(AuthContext);
     const [message, setMessage] = useState()
     const [messages, setMessages] = React.useState([])
 
-    const sendMessageHandle = async () => {
+    const sendMessageHandle = () => {
         if (message) {
             if (message.trim()) {
-                sendMessage(user.uid, id, message)
+                let msg = message;
                 setMessage('')
+                sendMessage(user.uid, id, msg)
+
+                fetch('https://wemeetadmin.herokuapp.com/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        token: token,
+                        title: user.displayName,
+                        body: msg
+                    })
+                })
             }
         }
     }
@@ -51,7 +65,7 @@ const Chat = ({ route, navigation }) => {
                         <View style={{
                             flexDirection: 'row',
                         }}>
-                            <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { navigation.goBack() }}>
+                            <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { navigation.navigate('chatUserList') }}>
                                 <Icon name='arrow-back' size={26} color="#000" style={{ paddingLeft: 15 }} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => {

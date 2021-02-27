@@ -20,7 +20,8 @@ const UserListItem = (props) => {
             id: user.id,
             email: user.email,
             avatar: user.avatar,
-            userName: user.userName
+            userName: user.userName,
+            token: user.token
         })
     }
 

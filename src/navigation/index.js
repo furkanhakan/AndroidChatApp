@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, useColorScheme, Image, TouchableOpacity, TouchableNativeFeedback, AppState } from 'react-native';
+import { View, useColorScheme, Image, TouchableOpacity, AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Chat from '../screens/Chat';
@@ -13,6 +13,7 @@ import { AuthContext } from '../context/FirebaseContext';
 import { Icon, Text } from 'react-native-elements'
 import Profile from '../screens/Profile';
 import userChangeStatus from '../service/userChangeStatus'
+import messaging from '@react-native-firebase/messaging';
 
 const Stack = createStackNavigator();
 
@@ -20,8 +21,29 @@ export default function App() {
     const { user } = React.useContext(AuthContext)
     const appState = React.useRef(AppState.currentState);
 
+    const messageListener = async () => {
+        try {
+            messaging().onNotificationOpenedApp((notification) => {
+                const { title, body } = notification;
+                console.log(title, body)
+            });
+
+            messaging().setBackgroundMessageHandler((remoteMessage) => {
+                console.log(remoteMessage.data)
+            })
+
+            messaging().onMessage((message) => {
+                console.log(JSON.stringify(message));
+            });
+
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     React.useEffect(() => {
         AppState.addEventListener("change", _handleAppStateChange);
+        messageListener()
 
         return () => {
             AppState.removeEventListener("change", _handleAppStateChange);
@@ -30,13 +52,16 @@ export default function App() {
     }, [])
 
     const _handleAppStateChange = async (nextAppState) => {
+        await messaging().registerDeviceForRemoteMessages();
+        await messaging().requestPermission();
+        const token = await messaging().getToken()
         appState.current = nextAppState;
         let status = false;
         if (appState.current == 'active') {
             status = true;
         }
 
-        userChangeStatus(user.uid, status, new Date())
+        userChangeStatus(user.uid, status, new Date(), token)
     };
 
     const test = () => {

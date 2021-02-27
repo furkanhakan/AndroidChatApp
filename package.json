@@ -46,5 +46,18 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furkanhakan/AndroidChatApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/furkanhakan/AndroidChatApp/issues"
+  },
+  "homepage": "https://github.com/furkanhakan/AndroidChatApp#readme",
+  "description": ""
 }

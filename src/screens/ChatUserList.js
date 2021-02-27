@@ -27,13 +27,14 @@ function ChatUserList({ navigation }) {
                         ...userList,
                         {
                             id: value.id,
-                            email: user._data.email,
-                            avatar: user._data.avatar,
-                            userName: user._data.name,
-                            lastMessage: value._data.message,
-                            time: value._data.time,
-                            me: value._data.me,
-                            seen: value._data.seen
+                            email: user.data().email,
+                            avatar: user.data().avatar,
+                            userName: user.data().name,
+                            lastMessage: value.data().message,
+                            time: value.data().time,
+                            me: value.data().me,
+                            seen: value.data().seen,
+                            token: user.data().token
                         }
                     ]
                     setUsers(userList)
