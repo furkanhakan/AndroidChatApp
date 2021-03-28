@@ -14,7 +14,7 @@ const Signup = ({ navigation }) => {
     const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/wemeet-a0aa8.appspot.com/o/user.png?alt=media&token=67a9d397-4574-466f-8c3c-af0337074226'
 
     function signUp() {
-        if (email && password && passwordAgain) {
+        if (name && email && password && passwordAgain) {
             if (password === passwordAgain) {
                 auth().createUserWithEmailAndPassword(email, password).then(async (user) => {
                     await firestore()
@@ -36,7 +36,9 @@ const Signup = ({ navigation }) => {
                     console.log(err.code)
                     switch (err.code) {
                         case 'auth/email-already-in-use': setError('Bu email adresi kullanımda.'); break;
+                        case 'auth/emaıl-already-ın-use': setError('Bu email adresi kullanımda.'); break;
                         case 'auth/invalid-email': setError('Lütfen geçerli bir email adresi giriniz.'); break;
+                        case 'auth/ınvalıd-emaıl': setError('Lütfen geçerli bir email adresi giriniz.'); break;
                         case 'auth/weak-password': setError('Daha güçlü bir parola deneyin.'); break;
                         default: setError('Bir hata oluştu. Lütfen daha sonra deneyin.'); break;
                     }
@@ -54,14 +56,14 @@ const Signup = ({ navigation }) => {
                 <View style={styles.loginScreenContainer}>
                     <View style={styles.loginFormView}>
                         <Text style={styles.logoText}>WeMeet</Text>
-                        <TextInput onChangeText={(text) => setName(text)} placeholder="Name" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
+                        <TextInput onChangeText={(text) => setName(text)} placeholder="İsim" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
                         <TextInput onChangeText={(text) => setEmail(text)} placeholder="Email" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
-                        <TextInput onChangeText={(text) => setPassword(text)} placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
-                        <TextInput onChangeText={(text) => setPasswordAgain(text)} placeholder="Password again" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
+                        <TextInput onChangeText={(text) => setPassword(text)} placeholder="Parola" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
+                        <TextInput onChangeText={(text) => setPasswordAgain(text)} placeholder="Parola tekrar" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
                         <Button
                             buttonStyle={styles.loginButton}
                             onPress={signUp}
-                            title="Sign up"
+                            title="Kayıt ol"
                         />
                         {
                             error ?

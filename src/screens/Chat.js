@@ -12,10 +12,7 @@ import styles from "./ChatScreenStyle";
 import { AuthContext } from "../context/FirebaseContext";
 import BG from '../../assets/images/ChatBG.png';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import Entypo from 'react-native-vector-icons/Entypo'
-import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ChatMessage from "../components/ChatMessage";
 import Colors from '../constant/Colors';
 import firestore from '@react-native-firebase/firestore'
@@ -140,20 +137,16 @@ const Chat = ({ route, navigation }) => {
                     <View style={styles.mainContainer}>
                         <FontAwesome5 name="laugh-beam" size={24} color="grey" style={{ padding: 10 }} />
                         <TextInput
-                            placeholder={"Type a message"}
+                            placeholder={"Bir mesaj yazın"}
                             style={styles.textInput}
                             multiline
                             value={message}
                             onChangeText={setMessage}
                         />
-                        <Entypo name="attachment" size={24} color="grey" style={styles.icon} />
-                        {!message && <Fontisto name="camera" size={24} color="grey" style={styles.icon} />}
                     </View>
                     <TouchableOpacity>
                         <View style={[styles.buttonContainer, { backgroundColor: Colors[useColorScheme()].background }]}>
-                            {!message
-                                ? <MaterialCommunityIcons name="microphone" size={28} color={Colors[useColorScheme()].tint} />
-                                : <MaterialIcons name="send" size={28} color={Colors[useColorScheme()].tint} onPress={sendMessageHandle} />}
+                            <MaterialIcons name="send" size={28} color={Colors[useColorScheme()].tint} onPress={sendMessageHandle} />
                         </View>
                     </TouchableOpacity>
                 </View>

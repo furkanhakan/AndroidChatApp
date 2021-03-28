@@ -73,7 +73,7 @@ export default function App() {
                 headerTintColor: Colors[useColorScheme()].tint
             }}>
                 <Stack.Screen name="chatUserList" component={ChatUserList} options={({ navigation }) => ({
-                    title: 'WeChat',
+                    title: 'WeMeet',
                     headerRight: () => (
                         <View style={{
                             flexDirection: 'row',

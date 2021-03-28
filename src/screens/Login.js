@@ -16,6 +16,7 @@ const Login = ({ navigation }) => {
                 switch (err.code) {
                     case 'auth/wrong-password': setError('Email adresiniz veya şifreniz yanlış.'); break;
                     case 'auth/invalid-email': setError('Lütfen geçerli bir email adresi giriniz.'); break;
+                    case 'auth/ınvalıd-emaıl': setError('Lütfen geçerli bir email adresi giriniz.'); break;
                     case 'auth/user-not-found': setError('Böyle bir hesap kayıtlı değil.'); break;
                     default: setError('Bir hata oluştu. Lütfen daha sonra deneyin.'); break;
                 }
@@ -31,11 +32,11 @@ const Login = ({ navigation }) => {
                     <View style={styles.loginFormView}>
                         <Text style={styles.logoText}>WeMeet</Text>
                         <TextInput onChangeText={(text) => setEmail(text)} placeholder="Email" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
-                        <TextInput onChangeText={(text) => setPassword(text)} placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
+                        <TextInput onChangeText={(text) => setPassword(text)} placeholder="Parola" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} />
                         <Button
                             buttonStyle={styles.loginButton}
                             onPress={login}
-                            title="Login"
+                            title="Giriş yap"
                         />
                         {
                             error ?

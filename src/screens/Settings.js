@@ -8,6 +8,8 @@ import { launchImageLibrary } from 'react-native-image-picker'
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import userChangeStatus from '../service/userChangeStatus'
+import AnimatedLoader from "react-native-animated-loader";
 
 
 export default function Settings({ navigation }) {
@@ -15,27 +17,44 @@ export default function Settings({ navigation }) {
     const [image, setImage] = React.useState(user.photoURL);
     const [nameInputBorderWidth, setNameInputBorderWidth] = React.useState(0)
     const [name, setName] = React.useState(user.displayName)
+    const [changeImage, setChangeImage] = React.useState(false)
+    const [loading, setLoading] = React.useState(false)
 
     const uploadImage = async () => {
         const options = {};
         await launchImageLibrary(options, response => {
-            if (response.uri)
+            if (response.uri) {
                 setImage(response.uri);
+                setChangeImage(true);
+            }
         })
     }
 
     const saveProfile = async () => {
-        const ref = storage().ref(user.uid + '/profile');
-        await ref.putFile(image)
-        const url = await ref.getDownloadURL()
+        setLoading(true);
+        let url = image
+        if (changeImage) {
+            const ref = storage().ref(user.uid + '/profile');
+            await ref.putFile(image)
+            url = await ref.getDownloadURL()
+        }
+
         await auth().currentUser.updateProfile({
             displayName: name,
             photoURL: url
         })
+
         await firestore().collection('users').doc(user.uid).update({
-            avatar: url
+            avatar: url,
+            name: name
         })
-        navigation.navigate('chatUserList')
+
+        setLoading(false);
+    }
+
+    const signOut = async () => {
+        await userChangeStatus(user.uid, false, new Date(), '')
+        auth().signOut()
     }
 
     return (
@@ -90,9 +109,21 @@ export default function Settings({ navigation }) {
                 <Button
                     buttonStyle={{ backgroundColor: 'red' }}
                     title='Çıkış Yap'
-                    onPress={() => auth().signOut()}
+                    onPress={signOut}
                 />
             </View>
+            <AnimatedLoader
+                visible={loading}
+                overlayColor="rgba(255,255,255,0.75)"
+                source={require("../constant/loading.json")}
+                animationStyle={{
+                    width: 100,
+                    height: 100
+                }}
+                speed={1}
+            >
+                <Text>Lütfen Bekleyin...</Text>
+            </AnimatedLoader>
         </View>
     )
 }
